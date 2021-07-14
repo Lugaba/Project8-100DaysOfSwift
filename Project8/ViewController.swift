@@ -120,6 +120,10 @@ class ViewController: UIViewController {
                 letterButton.titleLabel?.font = UIFont.systemFont(ofSize: 36)
                 letterButton.setTitle("WWW", for: .normal)
                 letterButton.addTarget(self, action: #selector(letterTapped), for: .touchUpInside)
+                letterButton.layer.borderWidth = 1
+                letterButton.layer.cornerRadius = 10
+                letterButton.layer.borderColor = UIColor.lightGray.cgColor
+                
 
                 
                 let frame = CGRect(x: column * width, y: row*height, width: width, height: height)
@@ -157,10 +161,19 @@ class ViewController: UIViewController {
             currentAnswer.text = ""
             score += 1
             
-            if score % 7 == 0 {
+            guard let texto = answerLabel.text else {return}
+            
+            if !texto.contains("letters"){
                 let ac = UIAlertController(title: "Well done!", message: "Are you ready for the next level?", preferredStyle: .alert)
                 ac.addAction(UIAlertAction(title: "Let's go!", style: .default, handler: levelUp))
                 present(ac, animated: true)
+            }
+        } else {
+            let ac = UIAlertController(title: "Wrong!", message: "This word isn't the answer", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default, handler: clearTapped))
+            present(ac, animated: true)
+            if score > 0 {
+                score -= 1
             }
         }
     }
@@ -176,7 +189,7 @@ class ViewController: UIViewController {
         }
     }
     
-    @objc func clearTapped(_ sender: UIButton) {
+    @objc func clearTapped(_ sender: Any) {
         currentAnswer.text = ""
         
         for button in activatedButtons {
